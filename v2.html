@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alerta de Sistema: Acceso no autorizado</title>
+    <style>
+        /* Estilo visual: Negro total y letra de consola */
+        body {
+            background-color: #000;
+            color: #ccc;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            padding: 40px;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .critico { color: #ff0000; font-weight: bold; } /* Rojo para errores */
+        .exito { color: #ffffff; font-weight: bold; }   /* Blanco para éxitos */
+        .proceso { color: #555; }                       /* Gris para logs secundarios */
+
+        #consola { max-width: 800px; margin: 0 auto; }
+        
+        /* Cursor que parpadea al final */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #fff;
+            animation: parpadeo 1s infinite;
+        }
+
+        @keyframes parpadeo {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="consola"></div>
+<span class="cursor"></span>
+
+<script>
+    const consola = document.getElementById('consola');
+
+    // Esta es la lista de mensajes que aparecerán. 
+    // Puedes cambiarlos o agregar más fácilmente.
+    const secuencia = [
+        { t: "ESTABLECIENDO CONEXIÓN CON NODO REMOTO...", c: "proceso" },
+        { t: "CONEXIÓN ESTABLECIDA. IP ORIGEN: [CIFRADO]", c: "exito" },
+        { t: "UBICACIÓN DETECTADA: PERÚ", c: "exito" },
+        { t: "--------------------------------------------------", c: "proceso" },
+        { t: "INICIANDO EXTRACCIÓN DE CREDENCIALES...", c: "critico" },
+        { t: "Buscando archivos: 'Login Data', 'Web Data', 'Cookies'...", c: "proceso" },
+        { t: "> Extrayendo contraseñas guardadas... OK", c: "exito" },
+        { t: "> Extrayendo tokens de sesión ... OK", c: "exito" },
+        { t: "> Accediendo a historial de navegación y autocompletado... OK", c: "exito" },
+        { t: "--------------------------------------------------", c: "proceso" },
+        { t: "ANALIZANDO INFORMACIÓN DE IDENTIDAD...", c: "critico" },
+        { t: "> Obteniendo nombres de usuario y correos vinculados...", c: "proceso" },
+        { t: "> Recopilando metadatos de archivos locales...", c: "proceso" },
+        { t: "TRANSFERENCIA DE DATOS INICIADA: 12.4 GB en cola.", c: "critico" },
+        { t: "Subiendo paquetes a servidor remoto [45.10.x.x]...", c: "proceso" },
+        { t: "PROGRESO: [||||||||||----------] 50%", c: "exito" },
+        { t: "PROGRESO: [||||||||||||||||||||] 100%", c: "exito" },
+        { t: "TRANSFERENCIA COMPLETADA EXITOSAMENTE.", c: "exito" },
+        { t: "--------------------------------------------------", c: "proceso" },
+        { t: "BORRANDO HUELLAS Y REGISTROS DE EVENTOS (LOGS)...", c: "proceso" },
+        { t: "ACCESO ROOT PERSISTENTE INSTALADO.", c: "critico" },
+        { t: "SISTEMA COMPROMETIDO", c: "critico" }
+    ];
+
+    let indice = 0;
+
+    // Función que escribe cada línea con un tiempo de espera
+    function escribirLinea() {
+        if (indice < secuencia.length) {
+            const div = document.createElement('div');
+            div.className = secuencia[indice].c;
+            // Agregamos la hora actual para que parezca una consola real
+            const hora = new Date().toLocaleTimeString();
+            div.innerHTML = `<span style="color:#444">[${hora}]</span> ${secuencia[indice].t}`;
+            
+            consola.appendChild(div);
+            indice++;
+
+            // Baja el scroll automáticamente
+            window.scrollTo(0, document.body.scrollHeight);
+
+            // Tiempo aleatorio entre líneas para que parezca que está "cargando" de verdad
+            const tiempo = Math.random() * (1500 - 500) + 500;
+            setTimeout(escribirLinea, tiempo);
+        } else {
+            // Cuando termina la lista, empieza a generar códigos basura infinitos
+            setInterval(generarBasura, 50);
+        }
+    }
+
+    // Genera texto rápido al final para dar sensación de caos
+    function generarBasura() {
+        const div = document.createElement('div');
+        div.style.color = "#222";
+        const codigo = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        div.innerText = `DUMP_MEM_PTR_0x${codigo.toUpperCase()}... COPIADO`;
+        consola.appendChild(div);
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    // Iniciar después de 1 segundo
+    setTimeout(escribirLinea, 1000);
+</script>
+
+</body>
+</html>
